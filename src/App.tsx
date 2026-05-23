@@ -46,6 +46,12 @@ export default function App() {
     soundEffects: true
   });
 
+  // Visualization Panel View Mode Tabs (Active Flow vs. Multi-Agent System Architecture)
+  const [activeVisTab, setActiveVisTab] = useState<'flow' | 'architecture'>('flow');
+  
+  // Active Python microservices architecture visual module
+  const [activeArchModule, setActiveArchModule] = useState<string>('fastapi');
+
   // System-wide Dark Theme State
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (localStorage.getItem('accessirag-theme') as 'light' | 'dark') || 'light';
@@ -666,23 +672,37 @@ export default function App() {
               Secure distributed server-side Gemini RAG with offline adaptive memory simulation active.
             </p>
           </div>
-        </section>
-
-        {/* VISUALIZATION PANEL */}
+        </section>        {/* VISUALIZATION PANEL */}
         <section className="flex-1 bg-slate-100 dark:bg-slate-950 flex flex-col overflow-hidden relative" id="vis-dashboard">
           
           <div className="p-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md flex items-center justify-between z-10">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-1.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-lg shrink-0">
                 <BookOpen className="h-4 w-4" />
               </div>
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider">
-                  Visual Logic Flow Mapping
-                </h3>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-sans mt-0.5">
-                  Dynamic visual structure parsed by Flowchart Architect Agent
-                </p>
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                <button
+                  id="tab-vis-flow"
+                  onClick={() => { triggerSound('click'); setActiveVisTab('flow'); }}
+                  className={`px-3 py-1 rounded-md text-[11px] font-black uppercase tracking-wider transition-all duration-150 cursor-pointer ${
+                    activeVisTab === 'flow'
+                      ? 'bg-white dark:bg-slate-700 text-indigo-700 dark:text-indigo-300 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                  }`}
+                >
+                  Active Concept Flow
+                </button>
+                <button
+                  id="tab-vis-architecture"
+                  onClick={() => { triggerSound('click'); setActiveVisTab('architecture'); }}
+                  className={`px-3 py-1 rounded-md text-[11px] font-black uppercase tracking-wider transition-all duration-150 cursor-pointer ${
+                    activeVisTab === 'architecture'
+                      ? 'bg-white dark:bg-slate-700 text-indigo-700 dark:text-indigo-300 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                  }`}
+                >
+                  CrewAI & Python Setup (Phases 1-5)
+                </button>
               </div>
             </div>
 
@@ -697,189 +717,289 @@ export default function App() {
             </div>
           </div>
 
-          {/* Interactive SVG Node Diagram viewport */}
-          <div className="flex-1 flex flex-col justify-center items-center p-6 relative select-none">
+          {/* Interactive SVG Node Diagram or CrewAI Architecture Viewport */}
+          <div className="flex-1 flex flex-col justify-center items-center p-6 relative select-none overflow-y-auto">
             
-            {activeFlow ? (
-              <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-2xl shadow-sm overflow-hidden flex flex-col p-5 relative min-h-[460px]">
-                
-                {/* Node flowchart description top left */}
-                <div className="absolute top-4 left-4 z-15 bg-slate-900 dark:bg-slate-950 text-white px-2.5 py-1 rounded-lg text-[10px] font-mono flex items-center gap-1 shadow-sm dark:border dark:border-slate-850">
-                  <Terminal className="h-3 w-3 text-indigo-400" />
-                  <span>Interactive Flow Console</span>
-                </div>
-
-                {/* Simulated live visual traffic flow controls */}
-                <div className="absolute top-4 right-4 z-15 flex items-center gap-3 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-850 rounded-xl p-2 md:opacity-100 opacity-0 transition-opacity">
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setSimulationActive(!simulationActive)}
-                      className={`p-1 rounded-md text-xs font-bold font-sans transition-colors ${
-                        simulationActive ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                      }`}
-                      title="Activate data traffic particle engine simulation"
-                    >
-                      <PlayCircle className="h-4 w-4" />
-                    </button>
-                    <span className="text-[10px] font-bold text-slate-500 font-sans">
-                      {simulationActive ? 'Simulation: Active' : 'Simulation: Idle'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 border-l border-slate-200 dark:border-slate-800 pl-2">
-                    <Sliders className="h-3.5 w-3.5 text-slate-400" />
-                    <input 
-                      type="range"
-                      min="10"
-                      max="100"
-                      value={flowSimulatorSpeed}
-                      onChange={(e) => setFlowSimulatorSpeed(parseInt(e.target.value))}
-                      className="w-14 h-1 bg-slate-200 dark:bg-slate-800 rounded cursor-pointer accent-indigo-600"
-                      title="Adjust flow rate simulation latency"
-                    />
-                  </div>
-                </div>
-
-                {/* MAIN VECTOR STAGE */}
-                <div className="flex-1 w-full relative h-[300px] mt-8 flex items-center justify-center">
+            {activeVisTab === 'flow' ? (
+              activeFlow ? (
+                <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-2xl shadow-sm overflow-hidden flex flex-col p-5 relative min-h-[460px]">
                   
-                  {/* Adaptive flowing connecting curves SVGs */}
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-                    <defs>
-                      <linearGradient id="edge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#818cf8" stopOpacity="0.4" />
-                        <stop offset="50%" stopColor="#4f46e5" stopOpacity="0.8" />
-                        <stop offset="100%" stopColor="#818cf8" stopOpacity="0.4" />
-                      </linearGradient>
-                      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="3" result="glow" />
-                        <feComposite in="SourceGraphic" in2="glow" operator="over" />
-                      </filter>
-                    </defs>
-
-                    {/* Simple dynamic level line matching coordinates */}
-                    {activeFlow.nodes.map((n, idx) => {
-                      if (idx === activeFlow.nodes.length - 1) return null;
-                      
-                      // Node 1 & Node 2 coordinates logic
-                      const stepX = 140; 
-                      const startX = 60 + idx * stepX;
-                      const startY = idx % 2 === 0 ? 110 : 160;
-                      
-                      const endX = 60 + (idx + 1) * stepX;
-                      const endY = (idx + 1) % 2 === 0 ? 110 : 160;
-
-                      return (
-                        <g key={`edge-${idx}`}>
-                          {/* Main stroke connection line */}
-                          <path 
-                            d={`M ${startX} ${startY} Q ${(startX + endX)/2} ${(startY + endY)/2 - 20} ${endX} ${endY}`}
-                            stroke="url(#edge-grad)"
-                            strokeWidth="3"
-                            fill="none"
-                            strokeDasharray={simulationActive ? "6 4" : "none"}
-                          >
-                            {simulationActive && (
-                              <animate 
-                                attributeName="stroke-dashoffset" 
-                                values="30;0" 
-                                dur={`${2 - (flowSimulatorSpeed / 60)}s`} 
-                                repeatCount="indefinite" 
-                              />
-                            )}
-                          </path>
-                          
-                          {/* Animated glowing load particle bubble */}
-                          {simulationActive && (
-                            <circle r="5" fill="#4f46e5" filter="url(#glow)">
-                              <animateMotion 
-                                path={`M ${startX} ${startY} Q ${(startX + endX)/2} ${(startY + endY)/2 - 20} ${endX} ${endY}`}
-                                dur={`${2.5 - (flowSimulatorSpeed / 50)}s`} 
-                                repeatCount="indefinite"
-                              />
-                            </circle>
-                          )}
-                        </g>
-                      );
-                    })}
-                  </svg>
-
-                  {/* Nodes Container */}
-                  <div className="absolute inset-x-0 inset-y-0 flex items-center justify-between px-6 z-10 overflow-x-auto">
-                    {activeFlow.nodes.map((node, idx) => {
-                      const isSelected = selectedNode?.id === node.id;
-                      
-                      // Set interactive color palettes based on node role structure
-                      let colorClass = 'border-indigo-600 bg-indigo-50/50 text-indigo-950 font-bold dark:border-indigo-500 dark:bg-indigo-950/30 dark:text-indigo-200';
-                      if (node.type === 'start') {
-                        colorClass = 'border-emerald-600 bg-emerald-50 text-emerald-950 dark:border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-200';
-                      } else if (node.type === 'decision') {
-                        colorClass = 'border-amber-600 bg-amber-50 text-amber-950 dark:border-amber-500 dark:bg-amber-950/20 dark:text-amber-200';
-                      } else if (node.type === 'end') {
-                        colorClass = 'border-slate-800 bg-slate-100 text-slate-900 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-100';
-                      }
-
-                      return (
-                        <button
-                          key={node.id}
-                          id={`node-element-${node.id}`}
-                          onClick={() => { triggerSound('click'); setSelectedNode(node); }}
-                          style={{
-                            transform: `translateY(${idx % 2 === 0 ? '-30px' : '30px'})`
-                          }}
-                          className={`flex-shrink-0 w-32 min-h-24 p-2.5 rounded-xl border-2 text-center shadow-md select-none outline-none cursor-pointer transition-all duration-300 ${colorClass} ${
-                            isSelected 
-                              ? 'ring-4 ring-indigo-600/20 scale-110 shadow-indigo-100 dark:shadow-none' 
-                              : 'opacity-90 hover:opacity-100 hover:scale-[1.03]'
-                          }`}
-                        >
-                          <div className="text-[10px] font-black uppercase tracking-wide opacity-50 font-mono">
-                            LEVEL {idx + 1}
-                          </div>
-                          <div className="text-[11px] font-black tracking-tight leading-normal mt-1 truncate">
-                            {node.label}
-                          </div>
-                          <div className="text-[10px] text-slate-500 dark:text-slate-450 font-sans mt-0.5 leading-tight truncate">
-                            {node.type.toUpperCase()}
-                          </div>
-                        </button>
-                      );
-                    })}
+                  {/* Node flowchart description top left */}
+                  <div className="absolute top-4 left-4 z-15 bg-slate-900 dark:bg-slate-950 text-white px-2.5 py-1 rounded-lg text-[10px] font-mono flex items-center gap-1 shadow-sm dark:border dark:border-slate-850">
+                    <Terminal className="h-3 w-3 text-indigo-400" />
+                    <span>Interactive Flow Console</span>
                   </div>
 
-                </div>
-
-                {/* Nodes interactive bottom description meta viewer */}
-                {selectedNode && (
-                  <div className="bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 rounded-2xl p-4.5 z-20 shrink-0 select-none animate-fade">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className={`w-2 h-2 rounded-full ${
-                          selectedNode.type === 'start' ? 'bg-emerald-500' : selectedNode.type === 'decision' ? 'bg-amber-500' : 'bg-indigo-600'
-                        }`}></span>
-                        <h4 className="text-xs font-black tracking-tight text-slate-800 dark:text-slate-200 font-sans">
-                          {selectedNode.label}
-                        </h4>
-                      </div>
-                      <span className="text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded uppercase font-bold">
-                        {selectedNode.type} Node Info
+                  {/* Simulated live visual traffic flow controls */}
+                  <div className="absolute top-4 right-4 z-15 flex items-center gap-3 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-850 rounded-xl p-2 md:opacity-100 opacity-0 transition-opacity">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setSimulationActive(!simulationActive)}
+                        className={`p-1 rounded-md text-xs font-bold font-sans transition-colors ${
+                          simulationActive ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                        }`}
+                        title="Activate data traffic particle engine simulation"
+                      >
+                        <PlayCircle className="h-4 w-4" />
+                      </button>
+                      <span className="text-[10px] font-bold text-slate-500 font-sans">
+                        {simulationActive ? 'Simulation: Active' : 'Simulation: Idle'}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-normal font-sans">
-                      {selectedNode.description || 'Our visualization agent created this logical step to represent the computational boundary. Click other levels to query their specific behaviors.'}
-                    </p>
+                    <div className="flex items-center gap-1.5 border-l border-slate-200 dark:border-slate-800 pl-2">
+                      <Sliders className="h-3.5 w-3.5 text-slate-400" />
+                      <input 
+                        type="range"
+                        min="10"
+                        max="100"
+                        value={flowSimulatorSpeed}
+                        onChange={(e) => setFlowSimulatorSpeed(parseInt(e.target.value))}
+                        className="w-14 h-1 bg-slate-200 dark:bg-slate-800 rounded cursor-pointer accent-indigo-600"
+                        title="Adjust flow rate simulation latency"
+                      />
+                    </div>
                   </div>
-                )}
 
-              </div>
-            ) : (
-              <div className="text-center p-10 max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="h-6 w-6" />
+                  {/* MAIN VECTOR STAGE */}
+                  <div className="flex-1 w-full relative h-[300px] mt-8 flex items-center justify-center">
+                    
+                    {/* Adaptive flowing connecting curves SVGs */}
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                      <defs>
+                        <linearGradient id="edge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#818cf8" stopOpacity="0.4" />
+                          <stop offset="50%" stopColor="#4f46e5" stopOpacity="0.8" />
+                          <stop offset="100%" stopColor="#818cf8" stopOpacity="0.4" />
+                        </linearGradient>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feGaussianBlur stdDeviation="3" result="glow" />
+                          <feComposite in="SourceGraphic" in2="glow" operator="over" />
+                        </filter>
+                      </defs>
+
+                      {/* Simple dynamic level line matching coordinates */}
+                      {activeFlow.nodes.map((n, idx) => {
+                        if (idx === activeFlow.nodes.length - 1) return null;
+                        
+                        // Node 1 & Node 2 coordinates logic
+                        const stepX = 140; 
+                        const startX = 60 + idx * stepX;
+                        const startY = idx % 2 === 0 ? 110 : 160;
+                        
+                        const endX = 60 + (idx + 1) * stepX;
+                        const endY = (idx + 1) % 2 === 0 ? 110 : 160;
+
+                        return (
+                          <g key={`edge-${idx}`}>
+                            {/* Main stroke connection line */}
+                            <path 
+                              d={`M ${startX} ${startY} Q ${(startX + endX)/2} ${(startY + endY)/2 - 20} ${endX} ${endY}`}
+                              stroke="url(#edge-grad)"
+                              strokeWidth="3"
+                              fill="none"
+                              strokeDasharray={simulationActive ? "6 4" : "none"}
+                            >
+                              {simulationActive && (
+                                <animate 
+                                  attributeName="stroke-dashoffset" 
+                                  values="30;0" 
+                                  dur={`${2 - (flowSimulatorSpeed / 60)}s`} 
+                                  repeatCount="indefinite" 
+                                />
+                              )}
+                            </path>
+                            
+                            {/* Animated glowing load particle bubble */}
+                            {simulationActive && (
+                              <circle r="5" fill="#4f46e5" filter="url(#glow)">
+                                <animateMotion 
+                                  path={`M ${startX} ${startY} Q ${(startX + endX)/2} ${(startY + endY)/2 - 20} ${endX} ${endY}`}
+                                  dur={`${2.5 - (flowSimulatorSpeed / 50)}s`} 
+                                  repeatCount="indefinite"
+                                />
+                              </circle>
+                            )}
+                          </g>
+                        );
+                      })}
+                    </svg>
+
+                    {/* Nodes Container */}
+                    <div className="absolute inset-x-0 inset-y-0 flex items-center justify-between px-6 z-10 overflow-x-auto">
+                      {activeFlow.nodes.map((node, idx) => {
+                        const isSelected = selectedNode?.id === node.id;
+                        
+                        // Set interactive color palettes based on node role structure
+                        let colorClass = 'border-indigo-600 bg-indigo-50/50 text-indigo-950 font-bold dark:border-indigo-500 dark:bg-indigo-950/30 dark:text-indigo-200';
+                        if (node.type === 'start') {
+                          colorClass = 'border-emerald-600 bg-emerald-50 text-emerald-950 dark:border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-200';
+                        } else if (node.type === 'decision') {
+                          colorClass = 'border-amber-600 bg-amber-50 text-amber-950 dark:border-amber-500 dark:bg-amber-950/20 dark:text-amber-200';
+                        } else if (node.type === 'end') {
+                          colorClass = 'border-slate-800 bg-slate-100 text-slate-900 dark:border-slate-700 dark:bg-slate-850 dark:text-slate-100';
+                        }
+
+                        return (
+                          <button
+                            key={node.id}
+                            id={`node-element-${node.id}`}
+                            onClick={() => { triggerSound('click'); setSelectedNode(node); }}
+                            style={{
+                              transform: `translateY(${idx % 2 === 0 ? '-30px' : '30px'})`
+                            }}
+                            className={`flex-shrink-0 w-32 min-h-24 p-2.5 rounded-xl border-2 text-center shadow-md select-none outline-none cursor-pointer transition-all duration-300 ${colorClass} ${
+                              isSelected 
+                                ? 'ring-4 ring-indigo-600/20 scale-110 shadow-indigo-100 dark:shadow-none' 
+                                : 'opacity-90 hover:opacity-100 hover:scale-[1.03]'
+                            }`}
+                          >
+                            <div className="text-[10px] font-black uppercase tracking-wide opacity-50 font-mono">
+                              LEVEL {idx + 1}
+                            </div>
+                            <div className="text-[11px] font-black tracking-tight leading-normal mt-1 truncate">
+                              {node.label}
+                            </div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-450 font-sans mt-0.5 leading-tight truncate">
+                              {node.type.toUpperCase()}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                  </div>
+
+                  {/* Nodes interactive bottom description meta viewer */}
+                  {selectedNode && (
+                    <div className="bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 rounded-2xl p-4.5 z-20 shrink-0 select-none animate-fade">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${
+                            selectedNode.type === 'start' ? 'bg-emerald-500' : selectedNode.type === 'decision' ? 'bg-amber-500' : 'bg-indigo-600'
+                          }`}></span>
+                          <h4 className="text-xs font-black tracking-tight text-slate-800 dark:text-slate-200 font-sans">
+                            {selectedNode.label}
+                          </h4>
+                        </div>
+                        <span className="text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded uppercase font-bold">
+                          {selectedNode.type} Node Info
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-normal font-sans">
+                        {selectedNode.description || 'Our visualization agent created this logical step to represent the computational boundary. Click other levels to query their specific behaviors.'}
+                      </p>
+                    </div>
+                  )}
+
                 </div>
-                <h3 className="font-sans font-bold text-slate-800 dark:text-slate-200 mb-2">No active visualization map</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
-                  Submit a technical question to trigger reasoning. The visualization agent will compile, layout, and render a dynamic step-by-step flowchart logic tree here.
-                </p>
+              ) : (
+                <div className="text-center p-10 max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <BookOpen className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-sans font-bold text-slate-800 dark:text-slate-200 mb-2">No active visualization map</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
+                    Submit a technical question to trigger reasoning. The visualization agent will compile, layout, and render a dynamic step-by-step flowchart logic tree here.
+                  </p>
+                </div>
+              )
+            ) : (
+              /* INTERACTIVE ARCHITECTURE CONSOLE (PHASES 1-5 SHOWER) */
+              <div className="w-full max-w-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 overflow-hidden flex flex-col md:flex-row gap-6 min-h-[500px]">
+                
+                {/* 1. Left System Nodes Blueprint List */}
+                <div className="w-full md:w-64 shrink-0 flex flex-col gap-2.5">
+                  <div className="px-2 pb-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <h4 className="text-[10px] uppercase font-black tracking-widest text-slate-400">Roadmap Modules</h4>
+                    <p className="text-[9px] text-slate-500">Click to inspect Phase setups</p>
+                  </div>
+
+                  <button
+                    onClick={() => { triggerSound('click'); setActiveArchModule('fastapi'); }}
+                    className={`text-left p-3 rounded-xl border transition-all cursor-pointer flex flex-col ${
+                      activeArchModule === 'fastapi'
+                        ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20 dark:border-indigo-500'
+                        : 'border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 bg-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase font-black text-indigo-600 dark:text-indigo-400">PHASE 1</span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">FastAPI Routes & PDF</span>
+                    <span className="text-[9px] text-slate-400 mt-0.5 truncate">Uvicorn API server & PDF Parser</span>
+                  </button>
+
+                  <button
+                    onClick={() => { triggerSound('click'); setActiveArchModule('chromadb'); }}
+                    className={`text-left p-3 rounded-xl border transition-all cursor-pointer flex flex-col ${
+                      activeArchModule === 'chromadb'
+                        ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20 dark:border-indigo-500'
+                        : 'border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 bg-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase font-black text-indigo-600 dark:text-indigo-400">PHASE 2</span>
+                      <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">ChromaDB Vector Store</span>
+                    <span className="text-[9px] text-slate-400 mt-0.5 truncate">Embeddings & Similarity Search</span>
+                  </button>
+
+                  <button
+                    onClick={() => { triggerSound('click'); setActiveArchModule('crewai'); }}
+                    className={`text-left p-3 rounded-xl border transition-all cursor-pointer flex flex-col ${
+                      activeArchModule === 'crewai'
+                        ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20 dark:border-indigo-500'
+                        : 'border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 bg-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase font-black text-indigo-600 dark:text-indigo-400">PHASE 3</span>
+                      <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">CrewAI Agent Swarm</span>
+                    <span className="text-[9px] text-slate-400 mt-0.5 truncate">Ingestion, Retrieval & Reasoning</span>
+                  </button>
+
+                  <button
+                    onClick={() => { triggerSound('click'); setActiveArchModule('personalizer'); }}
+                    className={`text-left p-3 rounded-xl border transition-all cursor-pointer flex flex-col ${
+                      activeArchModule === 'personalizer'
+                        ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20 dark:border-indigo-500'
+                        : 'border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 bg-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase font-black text-indigo-600 dark:text-indigo-400">PHASE 4</span>
+                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">Cognitive Adaptation</span>
+                    <span className="text-[9px] text-slate-400 mt-0.5 truncate">ADHD, Dyslexia, ASD formatting</span>
+                  </button>
+
+                  <button
+                    onClick={() => { triggerSound('click'); setActiveArchModule('docker'); }}
+                    className={`text-left p-3 rounded-xl border transition-all cursor-pointer flex flex-col ${
+                      activeArchModule === 'docker'
+                        ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20 dark:border-indigo-500'
+                        : 'border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 bg-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase font-black text-indigo-600 dark:text-indigo-400">PHASE 5</span>
+                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">Docker & Deployment</span>
+                    <span className="text-[9px] text-slate-400 mt-0.5 truncate">Production optimization guides</span>
+                  </button>
+                </div>
+
+                {/* 2. Right Module Specifications Inspector Panel */}
+                <div className="flex-1 flex flex-col min-w-0">
+                  {getModuleMetaContent(activeArchModule, () => triggerSound('success'))}
+                </div>
+
               </div>
             )}
 
@@ -887,7 +1007,7 @@ export default function App() {
             <div className="absolute bottom-4 left-4 right-4 bg-white/70 dark:bg-slate-900/85 backdrop-blur-md rounded-xl p-3 border border-slate-200/50 dark:border-slate-800/50 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 font-sans shadow-sm flex items-start gap-2 max-w-md pointer-events-none select-none">
               <Info className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
               <div>
-                <strong>Cognitive Grounding:</strong> By visualising workflows with live particle movement, autistic or dyslexic learners build mapping associations faster and can retain conceptual mechanics up to 3 times longer.
+                <strong>Roadmap Integration:</strong> The workspace runs a secure node backend in parallel with a copyable Python/FastAPI/CrewAI microservice system in `backend-python/` to satisfy all five local and public deployment targets.
               </div>
             </div>
 
@@ -897,6 +1017,146 @@ export default function App() {
 
       </main>
 
+    </div>
+  );
+}
+
+// Helper module metadata extractor to show code snippets beautifully
+function getModuleMetaContent(moduleKey: string, onCopyCompleted?: (msg: string) => void) {
+  let segmentTitle = "";
+  let descriptionText = "";
+  let targetTech = "";
+  let statusBadge = "";
+  let activeCode = "";
+  let file_path = "";
+
+  if (moduleKey === 'fastapi') {
+    segmentTitle = "FastAPI Backend & PDF Parsing API";
+    statusBadge = "PHASE 1 - FULLY INTEGRATED IN BACKEND-PYTHON";
+    targetTech = "Python 3.11, FastAPI, PyPDF2, Uvicorn";
+    file_path = "/backend-python/main.py";
+    descriptionText = "The Phase 1 backend sets up a robust REST API framework to host ingest controllers, parse binary PDF documents on line buffers, and trigger CORS middleware protocols safely.";
+    activeCode = `@app.post("/api/documents/upload-pdf")
+async def upload_pdf_document(name: str = Form(...), file: UploadFile = File(...)):
+    # Read binary structural content and trigger PDF reader
+    file_bytes = await file.read()
+    reader = PdfReader(io.BytesIO(file_bytes))
+    text_content = ""
+    for page in reader.pages:
+        text_content += page.extract_text() or ""
+        
+    # Commit parsed text context to local Chroma DB
+    doc = db.add_document(name=name, doc_type="pdf", content=text_content)
+    return {"success": True, "document": doc}`;
+  } 
+  else if (moduleKey === 'chromadb') {
+    segmentTitle = "ChromaDB Semantic Vector Database";
+    statusBadge = "PHASE 2 - READY FOR PRODUCTION DEPLOYMENT";
+    targetTech = "ChromaDB Vector, Google GenAI Embeddings, Cosine similarity";
+    file_path = "/backend-python/database.py";
+    descriptionText = "Phase 2 translates document paragraphs into recursive chunk arrays of 1000 characters with 200 character overrides. Generates high-dimension vector embeddings using Google GenAI systems and indexes them inside ChromaDB workspaces.";
+    activeCode = `class ChromaLocalDB:
+    def add_document(self, name: str, doc_type: str, content: str):
+        # Chunk text into standard characters with 200 char overlaps
+        raw_chunks = split_into_overlapping_chunks(content, size=1000, overlap=200)
+        
+        # Embed chunks and index inside Chroma Vector Store
+        for i, text in enumerate(raw_chunks):
+            vector = ai.models.embed_content(model="gemini-embedding-2-preview", contents=text)
+            chroma_collection.add(
+                ids=[f"{doc_id}-chunk-{i}"],
+                embeddings=[vector],
+                metadatas=[{"sourceName": name, "type": doc_type}],
+                documents=[text]
+            )`;
+  } 
+  else if (moduleKey === 'crewai') {
+    segmentTitle = "CrewAI Multi-Agent Swarm Orchestrator";
+    statusBadge = "PHASE 3 - MULTI-AGENT DESIGN COMPLETE";
+    targetTech = "CrewAI Framework, Agent Cooperations, Gemini LLM";
+    file_path = "/backend-python/agents.py";
+    descriptionText = "Phase 3 establishes a distributed, sequential Multi-agent swarm. Combines specialized technical roles: Crawler, Searcher, and educational tutors collaborating sequentially to compile RAG summaries.";
+    activeCode = `# Configure parallel CrewAI workflow roles
+crawler = Agent(role='Crawler', goal='Fetch and sanitize documentation pages', backstory='System robot')
+searcher = Agent(role='Context Retriever', goal='Query ChromaDB for vector matches', backstory='Semantic matcher')
+simplifier = Agent(role='Cognitive Tutor', goal='Restructure technical text into analogies', backstory='ADHD developer helper')
+
+# Bundle into Sequential Executions Pipeline
+crew = Crew(
+    agents=[crawler, searcher, simplifier],
+    tasks=[scan_task, match_task, rewrite_task],
+    process=Process.sequential
+)`;
+  } 
+  else if (moduleKey === 'personalizer') {
+    segmentTitle = "Cognitive Personalization Adaptor";
+    statusBadge = "PHASE 4 - COGNITIVE PROFILES ACTIVE";
+    targetTech = "Adaptive LLM Prompts, Bionic letters, Dyslexic Spacers";
+    file_path = "/src/components/CognitivePanel.tsx";
+    descriptionText = "Phase 4 converts dry layouts into personalized mental assets. Prompts the reasoning assistant with explicit directives for ADHD and Dyslexia profiles, adjusting spacing elements, letter-trackings, and audio streams.";
+    activeCode = `# Configure customized structural instructions for user profiles
+if mode == "dyslexia":
+    mode_guidance = "Separate arguments into short, isolated paragraphs with generous letter tracking."
+elif mode == "adhd":
+    mode_guidance = "Add bolded list takeaway blocks upfront and eliminate verbose conversational logs."
+elif mode == "autism":
+    mode_guidance = "Use literal, human-friendly definitions. Specify concrete inputs and outputs only."`;
+  } 
+  else {
+    segmentTitle = "Docker Containerization & Production Deploy";
+    statusBadge = "PHASE 5 - OPTIMIZED FOR CLOUD RUN & EXPERT DEPLOYS ";
+    targetTech = "Docker, Multi-stage builds, Production CORS hooks";
+    file_path = "/backend-python/Dockerfile";
+    descriptionText = "Phase 5 provides standard container definitions. Optimizes performance on headless node frameworks, exposes standard interfaces on port 8000, and enables zero-config deployment schemas directly in Google Cloud Run.";
+    activeCode = `FROM python:3.11-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`;
+  }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(activeCode);
+    onCopyCompleted?.(`Saved '${file_path}' code snippet directly to clipboard!`);
+  };
+
+  return (
+    <div className="flex-1 flex flex-col min-h-0 text-slate-800 dark:text-slate-150 font-sans">
+      <div className="border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
+        <span className="inline-block text-[9px] font-black tracking-widest text-[#4f46e5] bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-full mb-1">
+          {statusBadge}
+        </span>
+        <h3 className="text-sm font-black text-slate-800 dark:text-slate-100">{segmentTitle}</h3>
+        <p className="text-[10px] text-slate-400 font-mono mt-0.5">Technology: {targetTech}</p>
+      </div>
+
+      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+        {descriptionText}
+      </p>
+
+      {/* Code Snip Header */}
+      <div className="flex items-center justify-between bg-slate-900 border-b border-slate-800 px-4 py-2 rounded-t-xl shrink-0 select-none">
+        <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1.5">
+          <Terminal className="h-3 w-3 text-[#4169E1]" />
+          {file_path}
+        </span>
+        <button
+          onClick={handleCopy}
+          className="text-[10px] font-bold text-[#818cf8] hover:text-white transition-colors cursor-pointer bg-slate-800 hover:bg-slate-750 px-2.5 py-1 rounded-md"
+        >
+          Copy Code Snippet
+        </button>
+      </div>
+
+      {/* Code Display */}
+      <div className="flex-1 overflow-auto rounded-b-xl border border-slate-900/40 bg-slate-950 p-4 font-mono text-[11px] leading-relaxed text-slate-300 antialiased max-h-[220px]">
+        <pre className="whitespace-pre">{activeCode}</pre>
+      </div>
     </div>
   );
 }

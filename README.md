@@ -159,7 +159,7 @@ When setting up this project in VS Code:
 1. Copy `.env.example` and name the new copy `.env` (this is ignored by Git).
 2. Insert your actual secret keys inside `.env`:
    ```env
-   GEMINI_API_KEY=your_actual_gemini_key_here
+   GEMINI_API_KEY=AIzaSyD_your_actual_gemini_key_here
    ```
 3. Run `npm run dev` as usual. The server will read the credentials locally without ever publishing them to GitHub.
 

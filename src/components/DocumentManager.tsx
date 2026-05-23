@@ -342,7 +342,9 @@ ${previewContent}
   };
 
   const handleDelete = async (docId: string) => {
-    if (!confirm("Are you sure you want to remove this documentation from the RAG knowledge pool?")) return;
+    const doc = documents.find(d => d.id === docId);
+    const docName = doc ? `"${doc.name}"` : "this document";
+    if (!window.confirm(`Are you sure you want to delete ${docName} from the ingested documents list? This action cannot be undone and will remove it from the RAG knowledge pool.`)) return;
     try {
       const response = await fetch(`/api/documents/${docId}`, {
         method: 'DELETE'

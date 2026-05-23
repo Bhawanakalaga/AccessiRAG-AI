@@ -1,0 +1,8 @@
+fastapi==0.110.0
+uvicorn==0.28.0
+pydantic==2.6.4
+crewai==0.22.5
+chromadb==0.4.24
+google-genai==0.1.1
+PyPDF2==3.0.1
+python-dotenv==1.0.1
