@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@layer utilities {
+  /* OpenDyslexic simulated layout configuration */
+  .font-dyslexic {
+    font-family: "Comic Sans MS", "Chalkboard SE", "Dyslexic-Simulated", cursive, sans-serif !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.22em !important;
+    line-height: 1.8 !important;
+  }
+}
+
+/* Active focus reading horizontal guide */
+.reading-ruler-guide {
+  position: absolute;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(79, 70, 229, 0.4) 0%, rgba(79, 70, 229, 0.8) 50%, rgba(79, 70, 229, 0.4) 100%);
+  box-shadow: 0 0 10px rgba(79, 70, 229, 0.6);
+  pointer-events: none;
+  z-index: 50;
+  transition: top 0.12s ease-out;
+}
+
+/* Smooth fade-in and high contrast */
+.high-contrast-mode {
+  border-width: 2px !important;
+  border-color: #000000 !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Elegant glass effect */
+.backdrop-glass {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}

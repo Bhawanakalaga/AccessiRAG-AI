@@ -1,0 +1,6 @@
+{
+  "name": "AccessiRAG AI",
+  "description": "Distributed Agentic RAG Platform for Technical Accessibility - designed for engineering and neurodivergent learners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
